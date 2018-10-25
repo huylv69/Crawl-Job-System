@@ -67,29 +67,44 @@ class ViecLam24hSpider(scrapy.Spider):
         if len(category) > 0:
             self.item["category"] = category[0]
 
-        sex = response.xpath('//*[@id="cols-right"]/div/div[2]/div[4]/div[2]/p[4]/span/span/text()').extract()
-        if len(sex) > 0:
-            self.item["sex"] = sex[0]
+        month = response.xpath('//*[@id="cols-right"]/div/div[2]/div[4]/div[2]/p[4]/span/text()').extract()
+        print(month)
+        if "gian thử việc" in month[0]:
+            time = response.xpath('//*[@id="cols-right"]/div/div[2]/div[4]/div[2]/p[4]/span/span/text()').extract()
+            if len(time) > 0:
+                self.item["time_trial"] = time[0]
 
-        age = response.xpath('//*[@id="cols-right"]/div/div[2]/div[4]/div[2]/p[5]/span/span/text()').extract()
-        if len(age) > 0:
-            self.item["age"] = age[0]
+            sex = response.xpath('//*[@id="cols-right"]/div/div[2]/div[4]/div[2]/p[5]/span/span/text()').extract()
+            if len(sex) > 0:
+                self.item["sex"] = sex[0]
+
+            age = response.xpath('//*[@id="cols-right"]/div/div[2]/div[4]/div[2]/p[6]/span/span/text()').extract()
+            if len(age) > 0:
+                self.item["age"] = age[0]
+        else:
+            sex = response.xpath('//*[@id="cols-right"]/div/div[2]/div[4]/div[2]/p[4]/span/span/text()').extract()
+            if len(sex) > 0:
+                self.item["sex"] = sex[0]
+
+            age = response.xpath('//*[@id="cols-right"]/div/div[2]/div[4]/div[2]/p[5]/span/span/text()').extract()
+            if len(age) > 0:
+                self.item["age"] = age[0]
 
         description = response.xpath('//*[@id="ttd_detail"]/div[1]/div[2]/div[1]/p/text()').extract()
         if len(description) > 0:
-            self.item["description"] = description[0]
+            self.item["description"] = description[0].strip()
 
         benefits = response.xpath('//*[@id="ttd_detail"]/div[1]/div[2]/div[2]/p/text()').extract()
         if len(benefits) > 0:
-            self.item["benefits"] = benefits[0]
+            self.item["benefits"] = benefits[0].strip()
 
         require_skill = response.xpath('//*[@id="ttd_detail"]/div[1]/div[2]/div[3]/p/text()').extract()
         if len(require_skill) > 0:
-            self.item["require_skill"] = require_skill[0]
+            self.item["require_skill"] = require_skill[0].strip()
 
         person = response.xpath('//*[@id="ttd_detail"]/div[2]/div[2]/p/text()').extract()
         addre = response.xpath('//*[@id="ttd_detail"]/div[2]/div[3]/p/text()').extract()
-        self.item["contact"] = "NGƯỜI LIÊN HỆ: " + person[0] + " \n " + "ĐỊA CHỈ LIÊN HỆ: " + addre[0]
+        self.item["contact"] = "NGƯỜI LIÊN HỆ: " + person[0].strip() + " \n " + "ĐỊA CHỈ LIÊN HỆ: " + addre[0].strip()
 
         company = response.xpath('//*[@id="cols-right"]/div/div[2]/div[1]/div/p/a/text()').extract()
         if len(company) > 0:

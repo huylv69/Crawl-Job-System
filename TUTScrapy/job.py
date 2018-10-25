@@ -32,6 +32,6 @@ class JobItem(scrapy.Item):
     expired = scrapy.Field()
     created = scrapy.Field()
     diploma = scrapy.Field() # Bang cap
-
+    time_trial = scrapy.Field()
     url=scrapy.Field()
     pass
