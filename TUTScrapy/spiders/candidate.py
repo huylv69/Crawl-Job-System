@@ -10,68 +10,48 @@ class CandidateSpider(InitSpider):
     crawl = [
         'https://vieclam24h.vn/tim-kiem-ung-vien-nhanh/?hdn_tu_khoa=&hdn_nganh_nghe_cap1=&hdn_dia_diem=&gioi_tinh_ntd=&ngoai_ngu_ntd=&thoi_gian_ntd=',
     ]
-
-    login_page = ('https://vieclam24h.vn/taikhoan/login?referral_url=aHR0cHM6Ly92aWVjbGFtMjRoLnZuL25oYS10dXllbi1kdW5n')
     start_urls = [
         'https://vieclam24h.vn/tim-kiem-ung-vien-nhanh/?hdn_tu_khoa=&hdn_nganh_nghe_cap1=&hdn_dia_diem=&gioi_tinh_ntd=&ngoai_ngu_ntd=&thoi_gian_ntd=',
     ]
 
-    def init_request(self):
-        return Request(url=self.login_page, callback=self.login)
+    def request(self, url, callback):
+        """
+         wrapper for scrapy.request
+        """
+        request = scrapy.Request(url=url, callback=callback)
+        request.cookies['PHPSESSID'] = "aj2v61sti9p5ugpu4to21i08n1"
+        request.cookies['SVID'] = "w61"
+        request.cookies['USER'] = "a%3A5%3A%7Bs%3A11%3A%22pk_taikhoan%22%3Bs%3A7%3A%225116530%22%3Bs%3A16%3A%22c_loai_tai_khoan%22%3Bs%3A1%3A%221%22%3Bs%3A15%3A%22c_ten_dang_nhap%22%3Bs%3A21%3A%22vanhuy.hust%40gmail.com%22%3Bs%3A16%3A%22c_chuoi_xac_nhan%22%3Bs%3A8%3A%22verified%22%3Bs%3A19%3A%22c_chuoi_xac_nhan_mk%22%3Bs%3A10%3A%22WIN5be2fc2%22%3B%7D"
+        request.cookies['USER_REMEMBER'] = "374819b2bd6f2215e12f5f71ce773f82%2F5bf1283e"
+        request.cookies['_ga'] = "GA1.2.822880323.1536126275"
+        request.cookies['gate'] = "ntd"
+        request.cookies['uid'] = 5116530
+        request.headers['User-Agent'] = ('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36')
+        return request
 
-    def login(self, response):
-        print
-        "Preparing Login"
-        return FormRequest.from_response(
-            response,
-            formdata={'password': 'Vanhuy96',
-                      'username': 'vanhuy.hust@gmail.com',
-                      'loai_tai_khoan': '1',
-                      'is_change_pass': '0'},
-            callback=self.after_login,
-            dont_filter=True,
-        )
-
-    def after_login(self, response):
-        print("alo",response.cookies.values())
-
-        self.initialized()
-
-
-    # def parse(self, response):
-    #     return FormRequest.from_response(response,
-    #                                      formdata={'password': 'Vanhuy96',
-    #                                                'username': 'vanhuy.hust@gmail.com',
-    #                                                'loai_tai_khoan': '1',
-    #                                                'is_change_pass': '0'},
-    #                                      callback=self.scrape_pages)
-    #
-    # def scrape_pages(self, response):
-    #     print("alo", response)
-    #     return Request(
-    #         url='https://vieclam24h.vn/tim-kiem-ung-vien-nhanh/?hdn_tu_khoa=&hdn_nganh_nghe_cap1=&hdn_dia_diem=&gioi_tinh_ntd=&ngoai_ngu_ntd=&thoi_gian_ntd=',
-    #         callback=self.parse_page)
+    def start_requests(self):
+        for i, url in enumerate(self.start_urls):
+            yield self.request(url, self.parse)
 
     def parse(self, response):
-        for tn in response.xpath('//div[@class="list-items "]/div/div/span'):
-            src = tn.xpath('a/@href').extract_first()
+        for tn in response.xpath('//*[@id="cols-right"]/div[1]/div[2]/div/div[1]/div/div'):
+            src = tn.xpath('div/div[2]/span[1]/a/@href').extract_first()
             src = response.urljoin(src)
-            yield scrapy.Request(src, callback=self.parse_src)
-
+            yield self.request(src, callback=self.parse_src)
         next_pages = response.xpath('//li[@class="next"]/a/@href').extract()
         next_page = next_pages[len(next_pages) - 1]
         print("LOG")
         print(next_page)
         if next_page is not None:
             next_page = response.urljoin(next_page)
-            yield scrapy.Request(next_page, callback=self.parse_page)
+            yield scrapy.Request(next_page, callback=self.parse)
 
     def parse_src(self, response):
         self.item = CandidateItem()
         self.item["url"] = response.request.url
 
         title = response.xpath(
-            '//div[@class="col-xs-12"]/h1[@class="text_blue font28 mb_10 mt_20 fws title_big"]/text()').extract()
+            '//*[@id="cols-right"]/div/div[2]/div[4]/div[1]/div[1]/div/div/h2/text()').extract()
         if len(title) > 0:
             self.item["title"] = title[0]
         else:
@@ -119,13 +99,12 @@ class CandidateSpider(InitSpider):
 
         objective = response.xpath('//*[@id="cols-right"]/div/div[2]/div[4]/div[2]/text()').extract()
         if len(objective) > 0:
-            self.item["benefits"] = objective[0].strip()
+            self.item["objective"] = objective[0].strip()
 
         sex = response.xpath(
             '//*[@id="cols-right"]/div/div[2]/div[4]/div[1]/div[2]/div/div[1]/p[5]/span[2]/text()').extract()
         if len(sex) > 0:
-            self.item["require_skill"] = sex[0].strip()
+            self.item["sex"] = sex[0].strip()
 
         if self.item["title"] != "":
             yield self.item
-
