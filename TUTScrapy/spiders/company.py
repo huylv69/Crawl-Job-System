@@ -886,7 +886,7 @@ class CompanySpider(scrapy.Spider):
         if len(scale) > 0:
             self.item["scale"] = scale[1].strip()
 
-        website = response.xpath('//*[@id="box_chi_tiet_nha_tuyen_dung"]/div/div[2]/div[1]/p[4]/span/text()').extract()
+        website = response.xpath('//*[@id="box_chi_tiet_nha_tuyen_dung"]/div/div[2]/div[1]/p[3]/span/text()').extract()
         if len(website) > 0:
             self.item["website"] = website[0].strip()
 
