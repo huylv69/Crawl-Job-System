@@ -10,9 +10,9 @@ mycursor = mydb.cursor()
 import json
 from pprint import pprint
 
-with open('candidate.json') as f:
+with open("../candidate-new.json") as f:
     data = json.load(f)
-
+print(len(data ))
 with open('dictcareer.json', encoding='utf8') as f:
     dictCareer = json.load(f)
 

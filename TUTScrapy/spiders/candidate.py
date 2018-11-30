@@ -92,19 +92,28 @@ class CandidateSpider(InitSpider):
         if len(category) > 0:
             self.item["category"] = category[0]
 
-        language = response.xpath(
-            '//*[@id="cols-right"]/div/div[2]/div[4]/div[1]/div[2]/div/div[1]/p[4]/span[2]/text()').extract()
-        if len(language) > 0:
-            self.item["language"] = language[0].strip()
+        label = response.xpath(
+            '//*[@id="cols-right"]/div/div[2]/div[4]/div[1]/div[2]/div/div[1]/p[4]/span[1]/text()').extract()
+        if len(label) > 0:
+            print(label[0].strip())
+            if "Ngoại ngữ" in label[0].strip():
+                language = response.xpath('//*[@id="cols-right"]/div/div[2]/div[4]/div[1]/div[2]/div/div[1]/p[4]/span[2]/text()').extract()
+                if len(language) > 0:
+                    self.item["language"] = language[0].strip()
+
+                sex = response.xpath('//*[@id="cols-right"]/div/div[2]/div[4]/div[1]/div[2]/div/div[1]/p[5]/span[2]/text()').extract()
+                if len(sex) > 0:
+                    self.item["sex"] = sex[0].strip()
+            else:
+                sex = response.xpath(
+                    '//*[@id="cols-right"]/div/div[2]/div[4]/div[1]/div[2]/div/div[1]/p[4]/span[2]/text()').extract()
+                if len(sex) > 0:
+                    self.item["sex"] = sex[0].strip()
 
         objective = response.xpath('//*[@id="cols-right"]/div/div[2]/div[4]/div[2]/text()').extract()
         if len(objective) > 0:
-            self.item["objective"] = objective[0].strip()
-
-        sex = response.xpath(
-            '//*[@id="cols-right"]/div/div[2]/div[4]/div[1]/div[2]/div/div[1]/p[5]/span[2]/text()').extract()
-        if len(sex) > 0:
-            self.item["sex"] = sex[0].strip()
+            des = ' '.join(objective).strip()
+            self.item["objective"] = "\n".join(des.splitlines())
 
         if self.item["title"] != "":
             yield self.item

@@ -892,7 +892,8 @@ class CompanySpider(scrapy.Spider):
 
         about = response.xpath('//*[@id="box_chi_tiet_nha_tuyen_dung"]/div/div[2]/div[2]/text()').extract()
         if len(about) > 0:
-            self.item["about"] = ' '.join(about).strip()
+            des = ' '.join(about).strip()
+            self.item["about"] = "\n".join(des.splitlines())
 
         if self.item["name"] != "":
             yield self.item

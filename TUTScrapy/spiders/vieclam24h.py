@@ -18,7 +18,6 @@ class ViecLam24hSpider(scrapy.Spider):
 
         next_pages = response.xpath('//li[@class="next"]/a/@href').extract()
         next_page = next_pages[len(next_pages) - 1]
-        print("LOG")
         print(next_page)
         if next_page is not None:
             next_page = response.urljoin(next_page)
@@ -92,15 +91,19 @@ class ViecLam24hSpider(scrapy.Spider):
 
         description = response.xpath('//*[@id="ttd_detail"]/div[1]/div[2]/div[1]/p/text()').extract()
         if len(description) > 0:
-            self.item["description"] = description[0].strip()
+            # self.item["description"] = description[0].strip()
+            des = ' '.join(description).strip()
+            self.item["description"] = "\n".join(des.splitlines())
 
         benefits = response.xpath('//*[@id="ttd_detail"]/div[1]/div[2]/div[2]/p/text()').extract()
         if len(benefits) > 0:
-            self.item["benefits"] = benefits[0].strip()
+            des = ' '.join(benefits).strip()
+            self.item["benefits"] = "\n".join(des.splitlines())
 
         require_skill = response.xpath('//*[@id="ttd_detail"]/div[1]/div[2]/div[3]/p/text()').extract()
         if len(require_skill) > 0:
-            self.item["require_skill"] = require_skill[0].strip()
+            des = ' '.join(require_skill).strip()
+            self.item["require_skill"] = "\n".join(des.splitlines())
 
         person = response.xpath('//*[@id="ttd_detail"]/div[2]/div[2]/p/text()').extract()
         addre = response.xpath('//*[@id="ttd_detail"]/div[2]/div[3]/p/text()').extract()
