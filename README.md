@@ -2,8 +2,8 @@
 - Crawl candidate 
 - Craw job -> List Job 
 - Get list url job
-- Crawl company 
--  insert list carreer -> company-new.json (pushdata)
+- Crawl company -> company-new.json 
+-  insert list carreer (pushdata)
 - insert list address 
 - Get list company (convert data -> list company )
 - insert company 

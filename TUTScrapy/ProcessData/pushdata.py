@@ -81,49 +81,49 @@ with open('work-new.json') as f:
 # mydb.commit()
 
 
-# insert job
-from datetime import datetime
-import time
-import requests
-
-API_ENDPOINT = "http://localhost:3000/api/posts"
-with open('dictcompany.json', encoding='utf8') as f:
-    dictCompany = json.load(f)
-
-with open('dictcareer.json', encoding='utf8') as f:
-    dictCareer = json.load(f)
-
-for job in data:
-    job["expired"] = job["expired"][:-1] + '9'
-    if job["company"] not in dictCompany:
-        continue
-    if 'position' not in job:
-        continue
-    created = datetime.strptime(job["created"], '%d/%m/%Y').strftime('%Y-%m-%d')
-    expired = datetime.strptime(job["expired"], '%d/%m/%Y').strftime('%Y-%m-%d')
-    pprint(job["position"])
-    pprint(job["experience"])
-
-    data = {
-            "idcompany": dictCompany[job["company"]],
-            "idcareer": dictCareer[job["career"]],
-            "title": job["title"],
-            "description": job["description"],
-            "created": created,
-            "expired": expired,
-            "category": job["category"],
-            "require_skill": job["require_skill"],
-            "benefits": job["benefits"],
-            "contact": job["contact"],
-            "salary": job["salary"],
-            "address": job["address"][9:],
-            "diploma": job["diploma"],
-            "sex": job["sex"],
-            "experience": job["experience"],
-            "position": job["position"]
-        }
-    r = requests.post(url=API_ENDPOINT, data=data)
-    pprint(r)
+# # insert job
+# from datetime import datetime
+# import time
+# import requests
+#
+# API_ENDPOINT = "http://localhost:3000/api/posts"
+# with open('dictcompany.json', encoding='utf8') as f:
+#     dictCompany = json.load(f)
+#
+# with open('dictcareer.json', encoding='utf8') as f:
+#     dictCareer = json.load(f)
+#
+# for job in data:
+#     job["expired"] = job["expired"][:-1] + '9'
+#     if job["company"] not in dictCompany:
+#         continue
+#     if 'position' not in job:
+#         continue
+#     created = datetime.strptime(job["created"], '%d/%m/%Y').strftime('%Y-%m-%d')
+#     expired = datetime.strptime(job["expired"], '%d/%m/%Y').strftime('%Y-%m-%d')
+#     pprint(job["position"])
+#     pprint(job["experience"])
+#
+#     data = {
+#             "idcompany": dictCompany[job["company"]],
+#             "idcareer": dictCareer[job["career"]],
+#             "title": job["title"],
+#             "description": job["description"],
+#             "created": created,
+#             "expired": expired,
+#             "category": job["category"],
+#             "require_skill": job["require_skill"],
+#             "benefits": job["benefits"],
+#             "contact": job["contact"],
+#             "salary": job["salary"],
+#             "address": job["address"][9:],
+#             "diploma": job["diploma"],
+#             "sex": job["sex"],
+#             "experience": job["experience"],
+#             "position": job["position"]
+#         }
+#     r = requests.post(url=API_ENDPOINT, data=data)
+#     pprint(r)
 #
 # for job in listJob:
 #     job["expired"] = job["expired"][:-1]+'9'

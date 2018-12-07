@@ -16,4 +16,5 @@ class CompanyItem(scrapy.Item):
     address = scrapy.Field()
     website = scrapy.Field()
     url = scrapy.Field()
+    logo = scrapy.Field()
     pass

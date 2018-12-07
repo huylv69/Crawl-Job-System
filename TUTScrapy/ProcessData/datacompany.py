@@ -1,18 +1,18 @@
 import mysql.connector
 
 mydb = mysql.connector.connect(
-    host="127.0.0.1",
-    user="root",
-    passwd="Vanhuy@123",
+    host="huylv.cbsivvgkto1p.us-east-2.rds.amazonaws.com",
+    user="huylv",
+    passwd="vanhuy96",
     database="linktest"
 )
 mycursor = mydb.cursor()
 import json
 from pprint import pprint
 
-with open('company-new.json') as f:
+with open('company-new-2.json') as f:
     data = json.load(f)
-
+pprint(data)
 # convert data
 # i = 0
 # dictCompany = {}
@@ -46,26 +46,36 @@ with open('dataCompany.json', encoding='utf8') as f:
 # #         n = n + 1
 # #     print(n)
 
-import requests
 
-API_ENDPOINT = "http://localhost:3000/api/companies"
-for company in dataCompany:
-    data = {
-        "idcompany": company["id"],
-        "email": company["email"],
-        "password": "huylv244",
-        "name": company["name"],
-        "activated": True,
-        "address": company["address"],
-        "about": company["about"],
-        "benefits": "Mang đến nhân viên môi trường làm việc chuyên nnghiệp thân thiện.",
-        "goal": "Trở thành công ty số 1 trong lĩnh vực định hướng",
-        "mission": "Mang lại giá trị cho công đồng và xã hội",
-        "created_at": "2018-12-01T05:58:23.864Z",
-        "website": company["website"],
-        "scale": company["scale"]
-    }
-    r = requests.post(url=API_ENDPOINT, data=data)
-    pprint(r)
-    # pprint(data)
-    # pprint(data)
+#Update logo
+for company in data:
+    if company["name"] not in dictCompany:
+        continue
+    sql = "UPDATE company set logo = %s where idcompany = %s"
+    val = (company["logo"], dictCompany[company["name"]])
+    mycursor.execute(sql, val)
+mydb.commit()
+
+# Push data
+# import requests
+# API_ENDPOINT = "http://localhost:3000/api/companies"
+# for company in dataCompany:
+#     data = {
+#         "idcompany": company["id"],
+#         "email": company["email"],
+#         "password": "huylv244",
+#         "name": company["name"],
+#         "activated": True,
+#         "address": company["address"],
+#         "about": company["about"],
+#         "benefits": "Mang đến nhân viên môi trường làm việc chuyên nnghiệp thân thiện.",
+#         "goal": "Trở thành công ty số 1 trong lĩnh vực định hướng",
+#         "mission": "Mang lại giá trị cho công đồng và xã hội",
+#         "created_at": "2018-12-01T05:58:23.864Z",
+#         "website": company["website"],
+#         "scale": company["scale"]
+#     }
+#     r = requests.post(url=API_ENDPOINT, data=data)
+#     pprint(r)
+#     # pprint(data)
+#     # pprint(data)

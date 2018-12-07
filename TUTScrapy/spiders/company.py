@@ -959,5 +959,9 @@ class CompanySpider(scrapy.Spider):
             des = ' '.join(about).strip()
             self.item["about"] = "\n".join(des.splitlines())
 
+        logo = response.xpath('//*[@id="box_chi_tiet_nha_tuyen_dung"]/div/div[1]/div[1]/img/@src').extract()
+        if len(logo) > 0:
+            self.item["logo"] = logo[0]
+
         if self.item["name"] != "":
             yield self.item
